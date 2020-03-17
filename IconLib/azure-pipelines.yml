@@ -56,24 +56,29 @@ steps:
     targetFolder: $(Build.ArtifactStagingDirectory)
 
 - task: PowerShell@2
+  displayName: Build Nuget Source URL
   inputs:
     targetType: 'inline'
     script: |
       $owner = "$env:GITHUB_OWNER"
       $source = "https://nuget.pkg.github.com/" + $owner.ToLower() + "/index.json"
-      echo "##vso[task.setvariable variable=NUGET_SOURCE;isOutput=true]$source"
+      Write-Host ("Nuget Source URL = $source")
+      Write-Host ("##vso[task.setvariable variable=NUGET_SOURCE;isOutput=true]$source")
   env:
     GITHUB_OWNER: $(GITHUB_OWNER)
 
-- script: nuget.exe sources Add -NonInteractive -Name github -Source "$(NUGET_SOURCE)" -Username "%GITHUB_USERNAME%" -Password "%GITHUB_TOKEN%" -ConfigFile $(Build.ArtifactStagingDirectory)\nuget.publish.config
+- script: nuget.exe sources Add -NonInteractive -Name github -Source "%NUGET_SOURCE%" -Username "%GITHUB_USERNAME%" -Password "%GITHUB_TOKEN%" -ConfigFile %NUGET_CONFIG%
   displayName: Add github package source
   env:
     GITHUB_OWNER: $(GITHUB_OWNER)
     GITHUB_USERNAME: $(GITHUB_USERNAME)
     GITHUB_TOKEN: $(GITHUB_TOKEN)
+    NUGET_SOURCE: $(NUGET_SOURCE)
+    NUGET_CONFIG: $(Build.ArtifactStagingDirectory)\nuget.publish.config
 
-- script: nuget push "%PACKAGES_DIR%/*.nupkg" -Source "$(NUGET_SOURCE)" -ConfigFile $(Build.ArtifactStagingDirectory)\nuget.publish.config
+- script: nuget push "%PACKAGES_DIR%/*.nupkg" -Source "%NUGET_SOURCE%" -ConfigFile %NUGET_CONFIG%
   displayName: Push Nuget Packages to $(GITHUB_PACKAGES)
   env:
-    GITHUB_OWNER: $(GITHUB_OWNER)
     PACKAGES_DIR: $(Build.ArtifactStagingDirectory)
+    NUGET_SOURCE: $(NUGET_SOURCE)
+    NUGET_CONFIG: $(Build.ArtifactStagingDirectory)\nuget.publish.config
