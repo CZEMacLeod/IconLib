@@ -44,7 +44,7 @@ steps:
     PathtoPublish: '$(build.artifactstagingdirectory)'
 
 - script: nuget push -ApiKey %GITHUB_TOKEN% -Source "%GITHUB_PACKAGES%" "%PACKAGES_DIR%/*.nupkg"
-  name: Push Nuget Packages to $(GITHUB_PACKAGES)
+  displayName: Push Nuget Packages to $(GITHUB_PACKAGES)
   env:
     GITHUB_TOKEN: $(GITHUB_TOKEN)
     GITHUB_PACKAGES: $(GITHUB_PACKAGES)
