@@ -29,8 +29,6 @@ steps:
     command: 'restore'
     restoreSolution: '$(solution)'
     feedsToUse: 'config'
-    nugetConfigPath: 'IconLib\Nuget.Config'
-    externalFeedCredentials: 'GitHub CZEMacLeod Packages'
 
 - task: VSBuild@1
   inputs:
