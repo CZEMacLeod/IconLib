@@ -43,8 +43,8 @@ steps:
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
 
-- script: ECHO Push packages from $(Build.ArtifactStagingDirectory) to $(GITHUB_PACKAGES)
-  displayName: Push Nuget Packages to $(GITHUB_PACKAGES)
+- script: ECHO $(GITHUB_TEST) from $(Build.ArtifactStagingDirectory) to $(GITHUB_PACKAGES)
+  displayName: Push Nuget Packages to $(GITHUB_PACKAGES) $(GITHUB_TEST)
   env:
     GITHUB_TOKEN: $(GITHUB_TOKEN)
     GITHUB_PACKAGES: $(GITHUB_PACKAGES)
