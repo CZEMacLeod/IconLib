@@ -10,12 +10,17 @@ pool:
   name: 'Default'
 
 variables:
-  solution: 'IconLib\IconLib.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
-  buildMachine: '$(Agent.MachineName)'
-  buildUser: '$(Build.QueuedBy)'
-  - group: Github-Packages
+- group: Github-Packages
+- name: solution
+  value: 'IconLib\IconLib.sln'
+- name: buildPlatform
+  value: 'Any CPU'
+- name: buildConfiguration
+  value: 'Release'
+- name: buildMachine
+  value: '$(Agent.MachineName)'
+- name: buildUser
+  value: '$(Build.QueuedBy)'
 
 steps:
 - powershell: 'Write-Host ("##vso[task.setvariable variable=MSBuildEmitSolution;]0")'
