@@ -55,9 +55,22 @@ steps:
     GITHUB_PACKAGES: $(GITHUB_PACKAGES)
     PACKAGES_DIR: $(Build.ArtifactStagingDirectory)
 
-- script: nuget push -ApiKey %GITHUB_TOKEN% -Source "%GITHUB_PACKAGES%" "%PACKAGES_DIR%/*.nupkg"
+- task: CopyFiles@2
+  displayName: Create nuget publish config
+  inputs:
+    sourceFolder: $(Build.SourcesDirectory)\IconLib
+    contents: 'nuget.publish.config'
+    targetFolder: $(Agent.TempDirectory)
+
+- script: nuget.exe sources Add -NonInteractive -Name github -Source "https://nuget.pkg.github.com/%GITHUB_OWNER%/index.json" -Username "%GITHUB_USERNAME%" -Password "%GITHUB_TOKEN%" -ConfigFile $(Agent.TempDirectory)\nuget.publish.config
+  displayName: Add github package source
+  env:
+    GITHUB_OWNER: $(GITHUB_OWNER)
+    GITHUB_USERNAME: $(GITHUB_USERNAME)
+    GITHUB_TOKEN: $(GITHUB_TOKEN)
+
+- script: nuget push "%PACKAGES_DIR%/*.nupkg" -Source "https://nuget.pkg.github.com/%GITHUB_OWNER%/index.json" -ConfigFile $(Agent.TempDirectory)\nuget.publish.config
   displayName: Push Nuget Packages to $(GITHUB_PACKAGES)
   env:
-    GITHUB_TOKEN: $(GITHUB_TOKEN)
-    GITHUB_PACKAGES: $(GITHUB_PACKAGES)
+    GITHUB_OWNER: $(GITHUB_OWNER)
     PACKAGES_DIR: $(Build.ArtifactStagingDirectory)
