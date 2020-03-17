@@ -48,28 +48,31 @@ steps:
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
 
-- script: ECHO $(GITHUB_TEST) from $(Build.ArtifactStagingDirectory) to $(GITHUB_PACKAGES)
-  displayName: Push Nuget Packages to $(GITHUB_PACKAGES) $(GITHUB_TEST)
-  env:
-    GITHUB_TOKEN: $(GITHUB_TOKEN)
-    GITHUB_PACKAGES: $(GITHUB_PACKAGES)
-    PACKAGES_DIR: $(Build.ArtifactStagingDirectory)
-
 - task: CopyFiles@2
   displayName: Create nuget publish config
   inputs:
     sourceFolder: $(Build.SourcesDirectory)\IconLib
     contents: 'nuget.publish.config'
-    targetFolder: $(Agent.TempDirectory)
+    targetFolder: $(Build.ArtifactStagingDirectory)
 
-- script: nuget.exe sources Add -NonInteractive -Name github -Source "https://nuget.pkg.github.com/%GITHUB_OWNER%/index.json" -Username "%GITHUB_USERNAME%" -Password "%GITHUB_TOKEN%" -ConfigFile $(Agent.TempDirectory)\nuget.publish.config
+- task: PowerShell@2
+  inputs:
+    targetType: 'inline'
+    script: |
+      $owner = "$env:GITHUB_OWNER"
+      $source = "https://nuget.pkg.github.com/" + $owner.ToLower() + "/index.json"
+      echo "##vso[task.setvariable variable=NUGET_SOURCE;isOutput=true]$source"
+  env:
+    GITHUB_OWNER: $(GITHUB_OWNER)
+
+- script: nuget.exe sources Add -NonInteractive -Name github -Source "$(NUGET_SOURCE)" -Username "%GITHUB_USERNAME%" -Password "%GITHUB_TOKEN%" -ConfigFile $(Build.ArtifactStagingDirectory)\nuget.publish.config
   displayName: Add github package source
   env:
     GITHUB_OWNER: $(GITHUB_OWNER)
     GITHUB_USERNAME: $(GITHUB_USERNAME)
     GITHUB_TOKEN: $(GITHUB_TOKEN)
 
-- script: nuget push "%PACKAGES_DIR%/*.nupkg" -Source "https://nuget.pkg.github.com/%GITHUB_OWNER%/index.json" -ConfigFile $(Agent.TempDirectory)\nuget.publish.config
+- script: nuget push "%PACKAGES_DIR%/*.nupkg" -Source "$(NUGET_SOURCE)" -ConfigFile $(Build.ArtifactStagingDirectory)\nuget.publish.config
   displayName: Push Nuget Packages to $(GITHUB_PACKAGES)
   env:
     GITHUB_OWNER: $(GITHUB_OWNER)
