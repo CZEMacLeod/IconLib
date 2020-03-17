@@ -63,7 +63,7 @@ steps:
       $owner = "$env:GITHUB_OWNER"
       $source = "https://nuget.pkg.github.com/" + $owner.ToLower() + "/index.json"
       Write-Host ("Nuget Source URL = $source")
-      Write-Host ("##vso[task.setvariable variable=NUGET_SOURCE;isOutput=true]$source")
+      Write-Host ("##vso[task.setvariable variable=NUGET_SOURCE]$source")
   env:
     GITHUB_OWNER: $(GITHUB_OWNER)
 
