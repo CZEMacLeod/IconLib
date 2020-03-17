@@ -48,6 +48,4 @@ steps:
     command: 'push'
     packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
     nuGetFeedType: 'external'
-    feedsToUse: 'config'
-    nugetConfigPath: 'NuGet.config'
-    externalFeedCredentials: '$(GITHUB_TOKEN)'
+    publishFeedCredentials: 'GitHub CZEMacLeod Packages'
