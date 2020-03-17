@@ -15,7 +15,7 @@ variables:
   buildConfiguration: 'Release'
   buildMachine: '$(Agent.MachineName)'
   buildUser: '$(Build.QueuedBy)'
-  group: Github-Packages
+  - group: Github-Packages
 
 steps:
 - powershell: 'Write-Host ("##vso[task.setvariable variable=MSBuildEmitSolution;]0")'
