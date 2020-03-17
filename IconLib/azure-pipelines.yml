@@ -67,7 +67,7 @@ steps:
   env:
     GITHUB_OWNER: $(GITHUB_OWNER)
 
-- script: nuget.exe sources Add -NonInteractive -Name github -Source "%NUGET_SOURCE%" -Username "%GITHUB_USERNAME%" -Password "%GITHUB_TOKEN%" -ConfigFile %NUGET_CONFIG%
+- script: nuget.exe sources Add -NonInteractive -Name GitHub -Source "%NUGET_SOURCE%" -Username "%GITHUB_USERNAME%" -Password "%GITHUB_TOKEN%" -ConfigFile %NUGET_CONFIG%
   displayName: Add github package source
   env:
     GITHUB_OWNER: $(GITHUB_OWNER)
@@ -76,9 +76,8 @@ steps:
     NUGET_SOURCE: $(NUGET_SOURCE)
     NUGET_CONFIG: $(Build.ArtifactStagingDirectory)\nuget.publish.config
 
-- script: nuget push "%PACKAGES_DIR%/*.nupkg" -Source "%NUGET_SOURCE%" -ConfigFile %NUGET_CONFIG%
+- script: nuget push "%PACKAGES_DIR%/*.nupkg" -Source GitHub -ConfigFile %NUGET_CONFIG%
   displayName: Push Nuget Packages to $(GITHUB_PACKAGES)
   env:
     PACKAGES_DIR: $(Build.ArtifactStagingDirectory)
-    NUGET_SOURCE: $(NUGET_SOURCE)
     NUGET_CONFIG: $(Build.ArtifactStagingDirectory)\nuget.publish.config
