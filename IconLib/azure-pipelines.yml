@@ -36,7 +36,7 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
     clean: true
-    msbuildArgs: '/t:IconLib:Pack /p:PushPackage=false /p:PackageOutputPath="$(Build.ArtifactStagingDirectory)" /p:BuildUser="$(buildUser)" /p:BuildMachine="$(buildMachine)" /p:AssemblyVersionSuffix="-ci" /p:AssemblyOriginatorKeyFile="$(app_snk.secureFilePath)" /p:CodeSigingThumbprint="$(app_pfx_thumbprint)"'
+    msbuildArgs: '/t:IconLib:Pack /p:PushPackage=false /p:PackageOutputPath="$(Build.ArtifactStagingDirectory)" /p:BuildUser="$(buildUser)" /p:BuildMachine="$(buildMachine)" /p:AssemblyVersionSuffix="-ci"'
 
 - task: PublishBuildArtifacts@1
   inputs:
