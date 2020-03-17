@@ -15,7 +15,7 @@ variables:
   buildConfiguration: 'Release'
   buildMachine: '$(Agent.MachineName)'
   buildUser: '$(Build.QueuedBy)'
-  group: 'Github Packages'
+  group: Github-Packages
 
 steps:
 - powershell: 'Write-Host ("##vso[task.setvariable variable=MSBuildEmitSolution;]0")'
@@ -42,6 +42,13 @@ steps:
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
+
+- script: ECHO Push packages from $(Build.ArtifactStagingDirectory) to $(GITHUB_PACKAGES)
+  displayName: Push Nuget Packages to $(GITHUB_PACKAGES)
+  env:
+    GITHUB_TOKEN: $(GITHUB_TOKEN)
+    GITHUB_PACKAGES: $(GITHUB_PACKAGES)
+    PACKAGES_DIR: $(Build.ArtifactStagingDirectory)
 
 - script: nuget push -ApiKey %GITHUB_TOKEN% -Source "%GITHUB_PACKAGES%" "%PACKAGES_DIR%/*.nupkg"
   displayName: Push Nuget Packages to $(GITHUB_PACKAGES)
