@@ -42,15 +42,4 @@ steps:
   inputs:
     PathtoPublish: '$(build.artifactstagingdirectory)'
 
-- task: NuGetAuthenticate@0
-  inputs:
-    nuGetServiceConnections: 'GitHub CZEMacLeod Packages'
-
-- task: NuGetCommand@2
-  displayName: 'NuGet push to GitHub Packages'
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;!$(Build.ArtifactStagingDirectory)/**/*.symbols.nupkg'
-    nuGetFeedType: 'external'
-    publishFeedCredentials: 'GitHub CZEMacLeod Packages'
-
+- script: nuget push -ApiKey $(GITHUB_TOKEN) -Source "$(GITHUB_PACKAGES)" "$(Build.ArtifactStagingDirectory)/*.nupkg"
